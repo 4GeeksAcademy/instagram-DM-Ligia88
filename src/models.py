@@ -31,7 +31,7 @@ class User(Base):
 class Media(Base):
     __tablename__ = 'media'
     id = Column(Integer, primary_key=True)
-    type = Column(Enum('image', 'video'), nullable=False)
+    type = Column (Integer)
     url = Column(String(250))
     post_id = Column(Integer, ForeignKey('post.id'))
     post = relationship("Post", back_populates="media")
@@ -41,7 +41,7 @@ class Post(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", back_populates="posts")
-    media = relationship("Media", back_populates="post")
+    media = relationship("Media", back_populates="post", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="post")
 
 class Comment(Base):
@@ -52,7 +52,6 @@ class Comment(Base):
     author = relationship("User", back_populates="comments")
     post_id = Column(Integer, ForeignKey('post.id'))
     post = relationship("Post", back_populates="comments")
-
 
     def to_dict(self):
         return {}
